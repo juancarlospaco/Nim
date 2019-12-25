@@ -570,9 +570,9 @@ proc genWhileStmt(p: PProc, n: PNode) =
   p.blocks[^1].id = -p.unique
   p.blocks[^1].isLoop = true
   let labl = p.unique.rope
-  lineF(p, "while True:$n # L$1", [labl])
+  lineF(p, "while True: # L$1 $n", [labl])  # We need a conditional here, but JS uses a Label instead?
   p.nested: gen(p, n[0], cond)
-  lineF(p, "if bool(not($1)): break # L$2$n", [cond.res, labl])
+  # lineF(p, "if bool(not($1)): break # L$2$n", [cond.res, labl])  # Here JS breaks using Label.
   p.nested: genStmt(p, n[1])
   lineF(p, "$n", [labl])
   setLen(p.blocks, p.blocks.len - 1)
