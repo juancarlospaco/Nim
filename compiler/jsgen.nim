@@ -694,7 +694,6 @@ proc genRaiseStmt(p: PProc, n: PNode) =
     gen(p, n[0], a)
     let typ = skipTypes(n[0].typ, abstractPtrs)
     genLineDir(p, n)
-    #useMagic(p, "raiseException")
     lineF(p, "raise Exception(str($1, $2))$n", [a.rdLoc, typ.sym.name.s.rope])
   else:
     genLineDir(p, n)
