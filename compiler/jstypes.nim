@@ -11,7 +11,7 @@
 
 ## Type info generation for the JS backend.
 
-proc rope(arg: Int128): Rope = rope($arg)
+template rope(arg: Int128): Rope = rope($arg)
 
 proc genTypeInfo(p: PProc, typ: PType): Rope
 proc genObjectFields(p: PProc, typ: PType, n: PNode): Rope =
@@ -68,8 +68,7 @@ proc genObjectFields(p: PProc, typ: PType, n: PNode): Rope =
         rope(lengthOrd(p.config, field.typ)), makeJSString(field.name.s), result]
   else: internalError(p.config, n.info, "genObjectFields")
 
-proc objHasTypeField(t: PType): bool {.inline.} =
-  tfInheritable in t.flags or t[0] != nil
+template objHasTypeField(t: PType): bool = tfInheritable in t.flags or t[0] != nil
 
 proc genObjectInfo(p: PProc, typ: PType, name: Rope) =
   let kind = if objHasTypeField(typ): tyObject else: tyTuple
