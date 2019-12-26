@@ -104,7 +104,7 @@ proc initCompRes(r: var TCompRes) =
   r.kind = resNone
 
 proc rdLoc(a: TCompRes): Rope {.inline.} =
-  if a.typ != etyBaseIndex: a.res else: "$1[$2]" % [a.address, a.res]
+  if a.typ != etyBaseIndex: a.res else: "$1" % [a.address, a.res]  # "$1[$2]"
 
 proc newProc(globals: PGlobals, module: BModule, procDef: PNode, options: TOptions): PProc =
   result = PProc(blocks: @[], options: options, module: module, procDef: procDef, g: globals, extraIndent: int(procDef != nil))

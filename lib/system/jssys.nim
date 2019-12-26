@@ -1,4 +1,5 @@
 ## Python Backend for Nim (CPython 3.8).
+import system/indexerrors  # Used. do NOT remove.
 
 type
   PSafePoint = ptr SafePoint
@@ -406,12 +407,10 @@ proc arrayConstr(len: int, value: JSRef, typ: PNimType): JSRef {.
   """
 
 proc chckIndx(i, a, b: int): int {.compilerproc.} =
-  if i >= a and i <= b: return i
-  else: raiseIndexError(i, a, b)
+  if i >= a and i <= b: return i else: raiseIndexError(i, a, b)
 
 proc chckRange(i, a, b: int): int {.compilerproc.} =
-  if i >= a and i <= b: return i
-  else: raiseRangeError()
+  if i >= a and i <= b: return i else: raiseRangeError()
 
 proc chckObj(obj, subclass: PNimType) {.compilerproc.} =
   # checks if obj is of type subclass:
@@ -432,7 +431,7 @@ proc isObj(obj, subclass: PNimType): bool {.compilerproc.} =
   return true
 
 proc addChar(x: string, c: char) {.compilerproc, asmNoStackFrame.} =
-  asm "str(`x`).__add__(`c`)"
+  asm "str(`x`).__add__(`c`)"  # Find better way?
 
 {.pop.}
 
@@ -441,8 +440,7 @@ proc tenToThePowerOf(b: int): BiggestFloat =
   var a = 10.0
   result = 1.0
   while true:
-    if (b and 1) == 1:
-      result = result * a
+    if (b and 1) == 1: result = result * a
     b = b shr 1
     if b == 0: break
     a = a * a
