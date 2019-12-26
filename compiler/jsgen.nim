@@ -1993,11 +1993,8 @@ template optionalLine(p: Rope): Rope =
   if p == nil: nil else: p & "\L"
 
 proc genProc(oldProc: PProc, prc: PSym): Rope =
-  var
-    resultSym: PSym
-    a: TCompRes
-  #if gVerbosity >= 3:
-  #  echo "BEGIN generating code for: " & prc.name.s
+  var resultSym: PSym
+  var a: TCompRes
   var p = newProc(oldProc.g, oldProc.module, prc.ast, prc.options)
   p.up = oldProc
   var returnStmt: Rope = nil
@@ -2050,9 +2047,6 @@ proc genProc(oldProc: PProc, prc: PSym): Rope =
   dec p.extraIndent
   result.add p.indentLine(def)
   result.add p.indentLine(~"$n")
-
-  #if gVerbosity >= 3:
-  #  echo "END   generated code for: " & prc.name.s
 
 proc genStmt(p: PProc, n: PNode) =
   var r: TCompRes
