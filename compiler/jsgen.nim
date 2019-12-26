@@ -2,7 +2,7 @@
 
 import
   ast, strutils, trees, magicsys, options, nversion, msgs, idents, types, tables, ropes, math, passes, ccgutils,
-  wordrecg, renderer, intsets, cgmeth, lowerings, sighashes, modulegraphs, lineinfos, rodutils, transf, injectdestructors
+  wordrecg, renderer, intsets, cgmeth, lowerings, modulegraphs, lineinfos, rodutils, transf, injectdestructors
 
 from modulegraphs import ModuleGraph, PPassContext
 
@@ -805,7 +805,7 @@ proc genAsmOrEmitStmt(p: PProc, n: PNode) =
           r.typ = etyNone
         elif r.typ == etyBaseIndex:
           # Deference first
-          r.res = "$1[$2]" % [r.address, r.res]
+          r.res = "$1  # [$2]" % [r.address, r.res]
           r.address = nil
           r.typ = etyNone
 

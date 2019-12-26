@@ -1,13 +1,4 @@
-#
-#
-#            Nim's Runtime Library
-#        (c) Copyright 2015 Andreas Rumpf
-#
-#    See the file "copying.txt", included in this
-#    distribution, for details about the copyright.
-#
-
-import system/indexerrors
+## Python Backend for Nim (CPython 3.8).
 
 type
   PSafePoint = ptr SafePoint

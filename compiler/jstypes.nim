@@ -1,15 +1,4 @@
-#
-#
-#           The Nim Compiler
-#        (c) Copyright 2013 Andreas Rumpf
-#
-#    See the file "copying.txt", included in this
-#    distribution, for details about the copyright.
-#
-
-# included from jsgen.nim
-
-## Type info generation for the JS backend.
+## Python Backend for Nim (CPython 3.8).
 
 template rope(arg: Int128): Rope = rope($arg)
 
