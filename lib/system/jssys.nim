@@ -99,14 +99,7 @@ proc unhandledException(e: ref Exception) {.
     add(buf, rawWriteStackTrace())
   let cbuf = cstring(buf)
   framePtr = nil
-  {.emit: """
-  if (typeof(Error) !== "undefined") {
-    throw new Error(`cbuf`);
-  }
-  else {
-    throw `cbuf`;
-  }
-  """.}
+  {.emit: """raise Exception(str(`cbuf`));""".}
 
 proc raiseException(e: ref Exception, ename: cstring) {.compilerproc, asmNoStackFrame.} =
   e.name = ename
