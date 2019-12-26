@@ -64,7 +64,6 @@ type
     module: BModule
     g: PGlobals
     generatedParamCopies: IntSet
-    beforeRetNeeded: bool
     unique: int    # for temp identifier generation
     blocks: seq[TBlock]
     extraIndent: int
@@ -1972,7 +1971,6 @@ proc convCStrToStr(p: PProc, n: PNode, r: var TCompRes) =
 
 proc genReturnStmt(p: PProc, n: PNode) =
   if p.procDef == nil: internalError(p.config, n.info, "genReturnStmt")
-  p.beforeRetNeeded = true
   if n[0].kind != nkEmpty:
     genStmt(p, n[0])
   else:
@@ -1994,12 +1992,7 @@ proc genProcBody(p: PProc, prc: PSym): Rope =
               makeJSString(toFilename(p.config, prc.info)))
   else:
     result = nil
-  if p.beforeRetNeeded:
-    result.add p.indentLine(~"BeforeRet: do {$n")
-    result.add p.body
-    result.add p.indentLine(~"} while (false);$n")
-  else:
-    result.add(p.body)
+  result.add(p.body)
   if prc.typ.callConv == ccSysCall:
     result = ("try {$n$1} catch (e) {$n" &
       " alert(\"Unhandled exception:\\n\" + e.message + \"\\n\"$n}") % [result]
@@ -2271,7 +2264,7 @@ proc genHeader(): Rope =
     # Powered by Nim v$1 https://nim-lang.org
     import sys
     from typing import *
-    sys.dont_write_bytecode = True
+    sys.dont_write_bytecode: Bool = True  # type: Bool
   """.unindent.format(VersionAsString))
 
 proc genModule(p: PProc, n: PNode) =
