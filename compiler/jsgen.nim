@@ -1971,11 +1971,7 @@ proc convCStrToStr(p: PProc, n: PNode, r: var TCompRes) =
 
 proc genReturnStmt(p: PProc, n: PNode) =
   if p.procDef == nil: internalError(p.config, n.info, "genReturnStmt")
-  if n[0].kind != nkEmpty:
-    genStmt(p, n[0])
-  else:
-    genLineDir(p, n)
-  lineF(p, "break BeforeRet;$n", [])
+  if n[0].kind != nkEmpty: genStmt(p, n[0]) else: genLineDir(p, n)
 
 proc frameCreate(p: PProc; procname, filename: Rope): Rope =
   const frameFmt = "F = {procname: $1, prev: framePtr, filename: $2, line: 0}$n"
@@ -1987,17 +1983,11 @@ proc frameDestroy(p: PProc): Rope =
 
 proc genProcBody(p: PProc, prc: PSym): Rope =
   if hasFrameInfo(p):
-    result = frameCreate(p,
-              makeJSString(prc.owner.name.s & '.' & prc.name.s),
-              makeJSString(toFilename(p.config, prc.info)))
+    result = frameCreate(p, makeJSString(prc.owner.name.s & '.' & prc.name.s), makeJSString(toFilename(p.config, prc.info)))
   else:
     result = nil
   result.add(p.body)
-  if prc.typ.callConv == ccSysCall:
-    result = ("try {$n$1} catch (e) {$n" &
-      " alert(\"Unhandled exception:\\n\" + e.message + \"\\n\"$n}") % [result]
-  if hasFrameInfo(p):
-    result.add(frameDestroy(p))
+  if hasFrameInfo(p): result.add(frameDestroy(p))
 
 template optionalLine(p: Rope): Rope =
   if p == nil: nil else: p & "\L"
@@ -2017,9 +2007,7 @@ proc genProc(oldProc: PProc, prc: PSym): Rope =
   if prc.typ[0] != nil and sfPure notin prc.flags:
     resultSym = prc.ast[resultPos].sym
     let mname = mangleName(p.module, resultSym)
-    if not isIndirect(resultSym) and
-      resultSym.typ.kind in {tyVar, tyPtr, tyLent, tyRef, tyOwned} and
-        mapType(p, resultSym.typ) == etyBaseIndex:
+    if not isIndirect(resultSym) and resultSym.typ.kind in {tyVar, tyPtr, tyLent, tyRef, tyOwned} and mapType(p, resultSym.typ) == etyBaseIndex:
       resultAsgn = p.indentLine(("$# = None$n") % [mname])
       resultAsgn.add p.indentLine("$#_Idx = 0$n" % [mname])
     else:
@@ -2035,7 +2023,7 @@ proc genProc(oldProc: PProc, prc: PSym): Rope =
   if sfInjectDestructors in prc.flags:
     transformedBody = injectDestructorCalls(oldProc.module.graph, prc, transformedBody)
 
-  p.nested: genStmt(p, transformedBody)
+  genStmt(p, transformedBody)
 
   var def: Rope
   if not prc.constraint.isNil:
