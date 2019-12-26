@@ -2053,7 +2053,7 @@ proc genStmt(p: PProc, n: PNode) =
   gen(p, n, r)
   if r.res != nil: lineF(p, "$#$n", [r.res])
 
-proc genPragma(p: PProc, n: PNode) =
+template genPragma(p: PProc, n: PNode) =
   for it in n.sons:
     case whichPragma(it)
     of wEmit: genAsmOrEmitStmt(p, it[1])
@@ -2240,14 +2240,14 @@ proc newModule(g: ModuleGraph; module: PSym): BModule =
   result.graph = g
   result.config = g.config
 
-proc genHeader(): Rope =
-  result = rope("""#!/usr/bin/env python3
+template genHeader(): Rope =
+  rope(static("""#!/usr/bin/env python3
     # -*- coding: utf-8 -*-
     # Powered by Nim v$1 https://nim-lang.org
     import sys
     from typing import *
     sys.dont_write_bytecode: Bool = True  # type: Bool
-  """.unindent.format(VersionAsString))
+  """.unindent.format(VersionAsString)))
 
 proc genModule(p: PProc, n: PNode) =
   if optStackTrace in p.options:
