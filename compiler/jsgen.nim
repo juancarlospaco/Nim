@@ -2269,7 +2269,9 @@ proc genHeader(): Rope =
   result = rope("""#!/usr/bin/env python3
     # -*- coding: utf-8 -*-
     # Powered by Nim v$1 https://nim-lang.org
+    import sys
     from typing import *
+    sys.dont_write_bytecode = True
   """.unindent.format(VersionAsString))
 
 proc genModule(p: PProc, n: PNode) =
