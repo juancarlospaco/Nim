@@ -118,13 +118,6 @@ const
     ##   doAssert "01234".find(invalid) == -1
     ##   doAssert "01A34".find(invalid) == 2
 
-since (1, 1):
-  const PunctuationChars* = {  # Based from Python 3.8
-    '!', '"', '#', '$', '%', '&', '\\', '(', ')', '*', '+',
-    ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@',
-    '[', ']', '^', '_', '`', '{', '|', '}', '~', '\''
-  }  ## The set of punctuation characters.
-
 
 func isAlphaAscii*(c: char): bool {.inline, procvar,
   rtl, extern: "nsuIsAlphaAsciiChar".} =
@@ -1282,7 +1275,7 @@ func parseHexStr*(s: string): string {.procvar,
     else:
       result[pos div 2] = chr(val + buf shl 4)
 
-proc parseBool*(s: string, strict = true): bool =
+proc parseBool*(s: string, strict: static[bool] = true): bool =
   ## Parses a value into a `bool`.
   ##
   ## If ``s`` is one of the following values: ``y, yes, true, 1, on``, then
@@ -1292,13 +1285,14 @@ proc parseBool*(s: string, strict = true): bool =
   ##
   ## When ``strict`` is ``false`` if ``s`` is not ``y, yes, true, 1, on``,
   ## then returns ``false`` instead of raise ``ValueError`` exception,
+  ## the ``strict`` argument must be known at compile-time,
   ## this may have faster performance, is definitely better than doing
-  ## ``try: parseBool(value) except: false``.
+  ## ``try: parseBool(value) except: false``
   runnableExamples:
     let a = "n"
     doAssert parseBool(a) == false
 
-  if likely(strict):
+  when strict:
     case normalize(s)
     of "y", "yes", "true", "1", "on": result = true
     of "n", "no", "false", "0", "off": result = false
