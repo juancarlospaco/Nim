@@ -198,7 +198,7 @@ func isUpperAscii*(c: char): bool {.inline, procvar,
     doAssert isUpperAscii('7') == false
   return c in {'A'..'Z'}
 
-func toLowerAscii*(c: char): char {.procvar,
+func toLowerAscii*(c: char): char {.inline, procvar,
   rtl, extern: "nsuToLowerAsciiChar".} =
   ## Returns the lower case version of character ``c``.
   ##
@@ -212,10 +212,34 @@ func toLowerAscii*(c: char): char {.procvar,
   runnableExamples:
     doAssert toLowerAscii('A') == 'a'
     doAssert toLowerAscii('e') == 'e'
-  if c in {'A'..'Z'}:
-    result = chr(ord(c) + (ord('a') - ord('A')))
-  else:
-    result = c
+  result = case c
+    of 'A': 'a'
+    of 'B': 'b'
+    of 'C': 'c'
+    of 'D': 'd'
+    of 'E': 'e'
+    of 'F': 'f'
+    of 'G': 'g'
+    of 'H': 'h'
+    of 'I': 'i'
+    of 'J': 'j'
+    of 'K': 'k'
+    of 'L': 'l'
+    of 'M': 'm'
+    of 'N': 'n'
+    of 'O': 'o'
+    of 'P': 'p'
+    of 'Q': 'q'
+    of 'R': 'r'
+    of 'S': 's'
+    of 'T': 't'
+    of 'U': 'u'
+    of 'V': 'v'
+    of 'W': 'w'
+    of 'X': 'x'
+    of 'Y': 'y'
+    of 'Z': 'z'
+    else: c
 
 template toImpl(call) =
   result = newString(len(s))
