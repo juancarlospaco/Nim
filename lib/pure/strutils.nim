@@ -260,7 +260,7 @@ func toLowerAscii*(s: string): string {.procvar,
     doAssert toLowerAscii("FooBar!") == "foobar!"
   toImpl toLowerAscii
 
-func toUpperAscii*(c: char): char {.procvar,
+func toUpperAscii*(c: char): char {.inline, procvar,
   rtl, extern: "nsuToUpperAsciiChar".} =
   ## Converts character `c` into upper case.
   ##
@@ -275,10 +275,34 @@ func toUpperAscii*(c: char): char {.procvar,
   runnableExamples:
     doAssert toUpperAscii('a') == 'A'
     doAssert toUpperAscii('E') == 'E'
-  if c in {'a'..'z'}:
-    result = chr(ord(c) - (ord('a') - ord('A')))
-  else:
-    result = c
+  result = case c
+    of 'a': 'A'
+    of 'b': 'B'
+    of 'c': 'C'
+    of 'd': 'D'
+    of 'e': 'E'
+    of 'f': 'F'
+    of 'g': 'G'
+    of 'h': 'H'
+    of 'i': 'I'
+    of 'j': 'J'
+    of 'k': 'K'
+    of 'l': 'L'
+    of 'm': 'M'
+    of 'n': 'N'
+    of 'o': 'O'
+    of 'p': 'P'
+    of 'q': 'Q'
+    of 'r': 'R'
+    of 's': 'S'
+    of 't': 'T'
+    of 'u': 'U'
+    of 'v': 'V'
+    of 'w': 'W'
+    of 'x': 'X'
+    of 'y': 'Y'
+    of 'z': 'Z'
+    else: c
 
 func toUpperAscii*(s: string): string {.procvar,
   rtl, extern: "nsuToUpperAsciiStr".} =
