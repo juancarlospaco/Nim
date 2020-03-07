@@ -473,7 +473,7 @@ func capitalizeAscii*(s: string, linearScanEnd: static[char] = ' '): string {.pr
     doAssert capitalizeAscii("-bar") == "-bar"
   result = if unlikely(s.len == 0): "" else: toUpperAscii(s[0], linearScanEnd) & substr(s, 1)
 
-func normalize*(s: string, start = 0.Natural): string {.procvar,
+func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' '): string {.procvar,
   rtl, extern: "nsuNormalize".} =
   ## Normalizes the string `s`.
   ##
@@ -493,12 +493,115 @@ func normalize*(s: string, start = 0.Natural): string {.procvar,
   assert s.len > start, "start must not be greater than string lenght"
   var j = start
   for i in start..len(s) - 1:
-    if s[i] in {'A'..'Z'}:
-      result[j] = chr(ord(s[i]) + (ord('a') - ord('A')))
+    case s[i]
+    of 'A':
+      when linearScanEnd == 'a': {.linearScanEnd.}
       inc j
-    elif s[i] != '_':
+      result[j] = 'a'
+    of 'B':
+      when linearScanEnd == 'b': {.linearScanEnd.}
+      inc j
+      result[j] = 'b'
+    of 'C':
+      when linearScanEnd == 'c': {.linearScanEnd.}
+      inc j
+      result[j] = 'c'
+    of 'D':
+      when linearScanEnd == 'd': {.linearScanEnd.}
+      inc j
+      result[j] = 'd'
+    of 'E':
+      when linearScanEnd == 'e': {.linearScanEnd.}
+      inc j
+      result[j] = 'e'
+    of 'F':
+      when linearScanEnd == 'f': {.linearScanEnd.}
+      inc j
+      result[j] = 'f'
+    of 'G':
+      when linearScanEnd == 'g': {.linearScanEnd.}
+      inc j
+      result[j] = 'g'
+    of 'H':
+      when linearScanEnd == 'h': {.linearScanEnd.}
+      inc j
+      result[j] = 'h'
+    of 'I':
+      when linearScanEnd == 'i': {.linearScanEnd.}
+      inc j
+      result[j] = 'i'
+    of 'J':
+      when linearScanEnd == 'j': {.linearScanEnd.}
+      inc j
+      result[j] = 'j'
+    of 'K':
+      when linearScanEnd == 'k': {.linearScanEnd.}
+      inc j
+      result[j] = 'k'
+    of 'L':
+      when linearScanEnd == 'l': {.linearScanEnd.}
+      inc j
+      result[j] = 'l'
+    of 'M':
+      when linearScanEnd == 'm': {.linearScanEnd.}
+      inc j
+      result[j] = 'm'
+    of 'N':
+      when linearScanEnd == 'n': {.linearScanEnd.}
+      inc j
+      result[j] = 'n'
+    of 'O':
+      when linearScanEnd == 'o': {.linearScanEnd.}
+      inc j
+      result[j] = 'o'
+    of 'P':
+      when linearScanEnd == 'p': {.linearScanEnd.}
+      inc j
+      result[j] = 'p'
+    of 'Q':
+      when linearScanEnd == 'q': {.linearScanEnd.}
+      inc j
+      result[j] = 'q'
+    of 'R':
+      when linearScanEnd == 'r': {.linearScanEnd.}
+      inc j
+      result[j] = 'r'
+    of 'S':
+      when linearScanEnd == 's': {.linearScanEnd.}
+      inc j
+      result[j] = 's'
+    of 'T':
+      when linearScanEnd == 't': {.linearScanEnd.}
+      inc j
+      result[j] = 't'
+    of 'U':
+      when linearScanEnd == 'u': {.linearScanEnd.}
+      inc j
+      result[j] = 'u'
+    of 'V':
+      when linearScanEnd == 'v': {.linearScanEnd.}
+      inc j
+      result[j] = 'v'
+    of 'W':
+      when linearScanEnd == 'w': {.linearScanEnd.}
+      inc j
+      result[j] = 'w'
+    of 'X':
+      when linearScanEnd == 'x': {.linearScanEnd.}
+      inc j
+      result[j] = 'x'
+    of 'Y':
+      when linearScanEnd == 'y': {.linearScanEnd.}
+      inc j
+      result[j] = 'y'
+    of 'Z':
+      when linearScanEnd == 'z': {.linearScanEnd.}
+      inc j
+      result[j] = 'z'
+    of '_': discard
+    else:
+      inc j
       result[j] = s[i]
-      inc j
   if j != s.len: setLen(result, j)
 
 func cmpIgnoreCase*(a, b: string, start = 0.Natural, linearScanEnd: static[char] = ' '): int =
