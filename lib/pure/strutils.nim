@@ -204,7 +204,7 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## at compile-time at that char position, reducing the case switch linear scan.
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
-  ## you dont have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
   ## this is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
@@ -297,13 +297,12 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
       'z'
     else: c
 
-
-template toImpl(call) =
+template toImpl(linearScanEnd: static[char], call) =
   result = newString(len(s))
   for i in 0..len(s) - 1:
-    result[i] = call(s[i])
+    result[i] = call(s[i], linearScanEnd)
 
-func toLowerAscii*(s: string): string {.procvar,
+func toLowerAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procvar,
   rtl, extern: "nsuToLowerAsciiStr".} =
   ## Converts string `s` into lower case.
   ##
@@ -311,11 +310,22 @@ func toLowerAscii*(s: string): string {.procvar,
   ## <unicode.html#toLower,string>`_ for a version that works for any Unicode
   ## character.
   ##
+  ## ``linearScanEnd`` is a static ``char`` argument,
+  ## if it is on range ``'a'..'z'`` then it will add ``{.linearScanEnd.}`` pragma
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
+  ## this is an optional compile-time optimization, is disabled by default.
+  ##
+  ## .. code-block:: nim
+  ##   echo toLowerAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal
+  ##
   ## See also:
   ## * `normalize proc<#normalize,string>`_
   runnableExamples:
     doAssert toLowerAscii("FooBar!") == "foobar!"
-  toImpl toLowerAscii
+  toImpl linearScanEnd, toLowerAscii
 
 func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, procvar,
   rtl, extern: "nsuToUpperAsciiChar".} =
@@ -330,7 +340,7 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## at compile-time at that char position, reducing the case switch linear scan.
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
-  ## you dont have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
   ## this is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
@@ -424,7 +434,7 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
       'Z'
     else: c
 
-func toUpperAscii*(s: string): string {.procvar,
+func toUpperAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procvar,
   rtl, extern: "nsuToUpperAsciiStr".} =
   ## Converts string `s` into upper case.
   ##
@@ -432,13 +442,24 @@ func toUpperAscii*(s: string): string {.procvar,
   ## <unicode.html#toUpper,string>`_ for a version that works for any Unicode
   ## character.
   ##
+  ## ``linearScanEnd`` is a static ``char`` argument,
+  ## if it is on range ``'a'..'z'`` then it will add ``{.linearScanEnd.}`` pragma
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
+  ## this is an optional compile-time optimization, is disabled by default.
+  ##
+  ## .. code-block:: nim
+  ##   echo toUpperAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal
+  ##
   ## See also:
   ## * `capitalizeAscii proc<#capitalizeAscii,string>`_
   runnableExamples:
     doAssert toUpperAscii("FooBar!") == "FOOBAR!"
-  toImpl toUpperAscii
+  toImpl linearScanEnd, toUpperAscii
 
-func capitalizeAscii*(s: string): string {.procvar,
+func capitalizeAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procvar,
   rtl, extern: "nsuCapitalizeAscii".} =
   ## Converts the first character of string `s` into upper case.
   ##
@@ -450,7 +471,7 @@ func capitalizeAscii*(s: string): string {.procvar,
   runnableExamples:
     doAssert capitalizeAscii("foo") == "Foo"
     doAssert capitalizeAscii("-bar") == "-bar"
-  result = if unlikely(s.len == 0): "" else: toUpperAscii(s[0]) & substr(s, 1)
+  result = if unlikely(s.len == 0): "" else: toUpperAscii(s[0], linearScanEnd) & substr(s, 1)
 
 func normalize*(s: string, start = 0.Natural): string {.procvar,
   rtl, extern: "nsuNormalize".} =
@@ -480,7 +501,7 @@ func normalize*(s: string, start = 0.Natural): string {.procvar,
       inc j
   if j != s.len: setLen(result, j)
 
-func cmpIgnoreCase*(a, b: string, start = 0.Natural): int =
+func cmpIgnoreCase*(a, b: string, start = 0.Natural, linearScanEnd: static[char] = ' '): int =
   ## Compares two strings in a case insensitive manner.
   ##
   ## ``start`` is the index where to start the string comparison,
@@ -506,7 +527,7 @@ func cmpIgnoreCase*(a, b: string, start = 0.Natural): int =
   assert m > start, "start must not be greater than shortest string"
   var i = start  # index = start
   while i < m:
-    result = ord(toLowerAscii(a[i])) - ord(toLowerAscii(b[i]))
+    result = ord(toLowerAscii(a[i], linearScanEnd)) - ord(toLowerAscii(b[i], linearScanEnd))
     if result != 0: return
     inc i
   result = a.len - b.len
@@ -514,7 +535,7 @@ func cmpIgnoreCase*(a, b: string, start = 0.Natural): int =
 {.push checks: off, line_trace: off.} # this is a hot-spot in the compiler!
                                       # thus we compile without checks here
 
-func cmpIgnoreStyle*(a, b: string): int {.rtl,
+func cmpIgnoreStyle*(a, b: string, linearScanEnd: static[char] = ' '): int {.rtl,
   extern: "nsuCmpIgnoreStyle", procvar.} =
   ## Semantically the same as ``cmp(normalize(a), normalize(b))``. It
   ## is just optimized to not allocate temporary strings. This should
@@ -534,8 +555,8 @@ func cmpIgnoreStyle*(a, b: string): int {.rtl,
   while true:
     while i < a.len and a[i] == '_': inc i
     while j < b.len and b[j] == '_': inc j
-    var aa = if i < a.len: toLowerAscii(a[i]) else: '\0'
-    var bb = if j < b.len: toLowerAscii(b[j]) else: '\0'
+    var aa = if i < a.len: toLowerAscii(a[i], linearScanEnd) else: '\0'
+    var bb = if j < b.len: toLowerAscii(b[j], linearScanEnd) else: '\0'
     result = ord(aa) - ord(bb)
     if result != 0: return result
     # the characters are identical:
