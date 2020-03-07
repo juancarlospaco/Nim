@@ -208,7 +208,7 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## this is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
-  ##   echo toLowerAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal Colors
+  ##   echo toLowerAscii('F', linearScanEnd = 'f') ## Hexadecimal
   ##
   ## See also:
   ## * `isLowerAscii proc<#isLowerAscii,char>`_
@@ -334,7 +334,7 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## this is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
-  ##   echo toLowerAscii("#ffffff", linearScanEnd = 'f') ## Hexadecimal Colors
+  ##   echo toLowerAscii('f', linearScanEnd = 'f') ## Hexadecimal
   ##
   ## See also:
   ## * `isLowerAscii proc<#isLowerAscii,char>`_
