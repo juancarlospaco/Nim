@@ -199,13 +199,16 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## <unicode.html#toLower,Rune>`_ for a version that works for any Unicode
   ## character.
   ##
-  ## ``linearScanEnd`` is a static ``char`` argument,
-  ## if it is on range ``'a'..'z'`` then it will add ``{.linearScanEnd.}`` pragma
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
   ## at compile-time at that char position, reducing the case switch linear scan.
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
-  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
-  ## this is an optional compile-time optimization, is disabled by default.
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
   ##
   ## .. code-block:: nim
   ##   echo toLowerAscii('F', linearScanEnd = 'f') ## Hexadecimal
@@ -213,10 +216,11 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## See also:
   ## * `isLowerAscii proc<#isLowerAscii,char>`_
   ## * `toLowerAscii proc<#toLowerAscii,string>`_ for converting a string
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert toLowerAscii('A') == 'a'
     doAssert toLowerAscii('e') == 'e'
-  result = case c
+  result = case c # Long case but other proc benefit from this too so it worth it
     of 'A':
       when linearScanEnd == 'a': {.linearScanEnd.}
       'a'
@@ -287,13 +291,13 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
       when linearScanEnd == 'w': {.linearScanEnd.}
       'w'
     of 'X':
-      when linearScanEnd == 'w': {.linearScanEnd.}
+      when linearScanEnd == 'x': {.linearScanEnd.}
       'x'
     of 'Y':
-      when linearScanEnd == 'w': {.linearScanEnd.}
+      when linearScanEnd == 'y': {.linearScanEnd.}
       'y'
     of 'Z':
-      when linearScanEnd == 'w': {.linearScanEnd.}
+      when linearScanEnd == 'z': {.linearScanEnd.}
       'z'
     else: c
 
@@ -323,6 +327,7 @@ func toLowerAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procv
   ##
   ## See also:
   ## * `normalize proc<#normalize,string>`_
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert toLowerAscii("FooBar!") == "foobar!"
   toImpl linearScanEnd, toLowerAscii
@@ -335,25 +340,29 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ## <unicode.html#toUpper,Rune>`_ for a version that works for any Unicode
   ## character.
   ##
-  ## ``linearScanEnd`` is a static ``char`` argument,
-  ## if it is on range ``'a'..'z'`` then it will add ``{.linearScanEnd.}`` pragma
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
   ## at compile-time at that char position, reducing the case switch linear scan.
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
-  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
-  ## this is an optional compile-time optimization, is disabled by default.
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
   ##
   ## .. code-block:: nim
-  ##   echo toLowerAscii('f', linearScanEnd = 'f') ## Hexadecimal
+  ##   echo toUpperAscii('f', linearScanEnd = 'f') ## Hexadecimal
   ##
   ## See also:
   ## * `isLowerAscii proc<#isLowerAscii,char>`_
   ## * `toUpperAscii proc<#toUpperAscii,string>`_ for converting a string
   ## * `capitalizeAscii proc<#capitalizeAscii,string>`_
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert toUpperAscii('a') == 'A'
     doAssert toUpperAscii('E') == 'E'
-  result = case c
+  result = case c # Long case but other proc benefit from this too so it worth it
     of 'a':
       when linearScanEnd == 'a': {.linearScanEnd.}
       'A'
@@ -442,19 +451,24 @@ func toUpperAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procv
   ## <unicode.html#toUpper,string>`_ for a version that works for any Unicode
   ## character.
   ##
-  ## ``linearScanEnd`` is a static ``char`` argument,
-  ## if it is on range ``'a'..'z'`` then it will add ``{.linearScanEnd.}`` pragma
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
   ## at compile-time at that char position, reducing the case switch linear scan.
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
-  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``,
-  ## this is an optional compile-time optimization, is disabled by default.
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
   ##
   ## .. code-block:: nim
-  ##   echo toUpperAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal
+  ##   echo toUpperAscii("#ffffff", linearScanEnd = 'f') ## Hexadecimal
+  ##   echo toUpperAscii("acgt", linearScanEnd = 't')    ## DNA data
   ##
   ## See also:
   ## * `capitalizeAscii proc<#capitalizeAscii,string>`_
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert toUpperAscii("FooBar!") == "FOOBAR!"
   toImpl linearScanEnd, toUpperAscii
@@ -466,8 +480,24 @@ func capitalizeAscii*(s: string, linearScanEnd: static[char] = ' '): string {.pr
   ## This works only for the letters ``A-Z``.
   ## Use `Unicode module<unicode.html>`_ for UTF-8 support.
   ##
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ##
+  ## .. code-block:: nim
+  ##   echo capitalizeAscii("#ffffff", linearScanEnd = 'f') ## Hexadecimal
+  ##   echo capitalizeAscii("acgt", linearScanEnd = 't')    ## DNA data
+  ##
   ## See also:
   ## * `toUpperAscii proc<#toUpperAscii,char>`_
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert capitalizeAscii("foo") == "Foo"
     doAssert capitalizeAscii("-bar") == "-bar"
@@ -484,8 +514,24 @@ func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' ')
   ## if you know that the strings may be normalized up to certain index,
   ## you can use ``start`` for better performance.
   ##
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ##
+  ## .. code-block:: nim
+  ##   echo toLowerAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal
+  ##   echo toLowerAscii("ACGT", linearScanEnd = 't')    ## DNA data
+  ##
   ## See also:
   ## * `toLowerAscii proc<#toLowerAscii,string>`_
+  ## * `linearScanEnd <manual.html#pragmas-linearscanend-pragma>`_ pragma
   runnableExamples:
     doAssert normalize("Foo_bar") == "foobar"
     doAssert normalize("Foo Bar") == "foo bar"
@@ -617,6 +663,20 @@ func cmpIgnoreCase*(a, b: string, start = 0.Natural, linearScanEnd: static[char]
   ##   echo cmpIgnoreCase("kitten", "kitteh", start = "kitten".len div 2)
   ##   ## You can create your own optimizations using start argument
   ##
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ##
+  ## .. code-block:: nim
+  ##   echo cmpIgnoreCase("#FFFFFF", "#fafafa", linearScanEnd = 'f') ## Hexadecimal
+  ##
   ## Returns:
   ##
   ## | 0 if a == b
@@ -644,6 +704,20 @@ func cmpIgnoreStyle*(a, b: string, linearScanEnd: static[char] = ' '): int {.rtl
   ## is just optimized to not allocate temporary strings. This should
   ## NOT be used to compare Nim identifier names.
   ## Use `macros.eqIdent<macros.html#eqIdent,string,string>`_ for that.
+  ##
+  ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
+  ## if the char is on the range ``'a'..'z'`` then it will add a
+  ## `{. linearScanEnd .} pragma <manual.html#pragmas-linearscanend-pragma>`_
+  ## at compile-time at that char position, reducing the case switch linear scan.
+  ##
+  ## Example: Imagine that you are working with Hexadecimal strings,
+  ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
+  ## This is an optional compile-time optimization, is disabled by default,
+  ## is up to your creativity how you can use it, some common use cases can be
+  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ##
+  ## .. code-block:: nim
+  ##   echo cmpIgnoreStyle("#FFFFFF", "#fafafa", linearScanEnd = 'f') ## Hexadecimal
   ##
   ## Returns:
   ##
