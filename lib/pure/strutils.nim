@@ -495,22 +495,12 @@ func capitalizeAscii*(s: string, linearScanEnd: static[char] = ' '): string {.pr
     doAssert capitalizeAscii("-bar") == "-bar"
   result = if unlikely(s.len == 0): "" else: toUpperAscii(s[0], linearScanEnd) & substr(s, 1)
 
-func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' '): string {.procvar,
+func normalize*(s: string, linearScanEnd: static[char] = ' '): string {.procvar,
   rtl, extern: "nsuNormalize".} =
   ## Normalizes the string `s`.
   ##
   ## That means to convert it to lower case and remove any '_'. This
   ## should NOT be used to normalize Nim identifier names.
-  ##
-  ## ``start`` is the index where to start the string normalization,
-  ## if you know that the strings may be normalized up to certain index,
-  ## you can use ``start`` for better performance, see the example:
-  ##
-  ## .. code-block:: nim
-  ##   echo normalize("abcdefghijklmnZZ", start = 12)
-  ##   ## You know first 12 chars are normalized, but last ones may not be
-  ##   echo normalize("kittEN", start = "kitten".len div 2)
-  ##   ## You can create your own optimizations using start argument
   ##
   ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
   ## if the char is on the range ``'a'..'z'`` then it will add a
@@ -531,120 +521,88 @@ func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' ')
   runnableExamples:
     doAssert normalize("Foo_bar") == "foobar"
     doAssert normalize("Foo Bar") == "foo bar"
-  result = newString(s.len)
-  assert s.len > start, "start must not be greater than string lenght"
-  var j = start
-  for i in start..len(s) - 1:
-    case s[i]
+  for letter in s:
+    case letter
     of 'A':
       when linearScanEnd == 'a': {.linearScanEnd.}
-      inc j
-      result[j] = 'a'
+      result.add 'a'
     of 'B':
       when linearScanEnd == 'b': {.linearScanEnd.}
-      inc j
-      result[j] = 'b'
+      result.add 'b'
     of 'C':
       when linearScanEnd == 'c': {.linearScanEnd.}
-      inc j
-      result[j] = 'c'
+      result.add 'c'
     of 'D':
       when linearScanEnd == 'd': {.linearScanEnd.}
-      inc j
-      result[j] = 'd'
+      result.add 'd'
     of 'E':
       when linearScanEnd == 'e': {.linearScanEnd.}
-      inc j
-      result[j] = 'e'
+      result.add 'e'
     of 'F':
       when linearScanEnd == 'f': {.linearScanEnd.}
-      inc j
-      result[j] = 'f'
+      result.add 'f'
     of 'G':
       when linearScanEnd == 'g': {.linearScanEnd.}
-      inc j
-      result[j] = 'g'
+      result.add 'g'
     of 'H':
       when linearScanEnd == 'h': {.linearScanEnd.}
-      inc j
-      result[j] = 'h'
+      result.add 'h'
     of 'I':
       when linearScanEnd == 'i': {.linearScanEnd.}
-      inc j
-      result[j] = 'i'
+      result.add 'i'
     of 'J':
       when linearScanEnd == 'j': {.linearScanEnd.}
-      inc j
-      result[j] = 'j'
+      result.add 'j'
     of 'K':
       when linearScanEnd == 'k': {.linearScanEnd.}
-      inc j
-      result[j] = 'k'
+      result.add 'k'
     of 'L':
       when linearScanEnd == 'l': {.linearScanEnd.}
-      inc j
-      result[j] = 'l'
+      result.add 'l'
     of 'M':
       when linearScanEnd == 'm': {.linearScanEnd.}
-      inc j
-      result[j] = 'm'
+      result.add 'm'
     of 'N':
       when linearScanEnd == 'n': {.linearScanEnd.}
-      inc j
-      result[j] = 'n'
+      result.add 'n'
     of 'O':
       when linearScanEnd == 'o': {.linearScanEnd.}
-      inc j
-      result[j] = 'o'
+      result.add 'o'
     of 'P':
       when linearScanEnd == 'p': {.linearScanEnd.}
-      inc j
-      result[j] = 'p'
+      result.add 'p'
     of 'Q':
       when linearScanEnd == 'q': {.linearScanEnd.}
-      inc j
-      result[j] = 'q'
+      result.add 'q'
     of 'R':
       when linearScanEnd == 'r': {.linearScanEnd.}
-      inc j
-      result[j] = 'r'
+      result.add 'r'
     of 'S':
       when linearScanEnd == 's': {.linearScanEnd.}
-      inc j
-      result[j] = 's'
+      result.add 's'
     of 'T':
       when linearScanEnd == 't': {.linearScanEnd.}
-      inc j
-      result[j] = 't'
+      result.add 't'
     of 'U':
       when linearScanEnd == 'u': {.linearScanEnd.}
-      inc j
-      result[j] = 'u'
+      result.add 'u'
     of 'V':
       when linearScanEnd == 'v': {.linearScanEnd.}
-      inc j
-      result[j] = 'v'
+      result.add 'v'
     of 'W':
       when linearScanEnd == 'w': {.linearScanEnd.}
-      inc j
-      result[j] = 'w'
+      result.add 'w'
     of 'X':
       when linearScanEnd == 'x': {.linearScanEnd.}
-      inc j
-      result[j] = 'x'
+      result.add 'x'
     of 'Y':
       when linearScanEnd == 'y': {.linearScanEnd.}
-      inc j
-      result[j] = 'y'
+      result.add 'y'
     of 'Z':
       when linearScanEnd == 'z': {.linearScanEnd.}
-      inc j
-      result[j] = 'z'
+      result.add 'z'
     of '_': discard
-    else:
-      inc j
-      result[j] = s[i]
-  if j != s.len: setLen(result, j)
+    else: result.add letter
 
 func cmpIgnoreCase*(a, b: string, start = 0.Natural, linearScanEnd: static[char] = ' '): int =
   ## Compares two strings in a case insensitive manner.
