@@ -509,7 +509,7 @@ func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' ')
   ## .. code-block:: nim
   ##   echo normalize("abcdefghijklmnZZ", start = 12)
   ##   ## You know first 12 chars are normalized, but last ones may not be
-  ##   echo normalize("kitTEN", start = "kitten".len div 2)
+  ##   echo normalize("kittEN", start = "kitten".len div 2)
   ##   ## You can create your own optimizations using start argument
   ##
   ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
