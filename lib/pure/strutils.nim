@@ -206,9 +206,7 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo toLowerAscii('F', linearScanEnd = 'f') ## Hexadecimal
@@ -220,8 +218,8 @@ func toLowerAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   runnableExamples:
     doAssert toLowerAscii('A') == 'a'
     doAssert toLowerAscii('e') == 'e'
-  result = case c # Long case but other proc benefit from this too so it worth it
-    of 'A':
+  result = case c # Long case but other proc benefit from this too so worth it
+    of 'A':       # User can "shorten" this case using linearScanEnd anyways
       when linearScanEnd == 'a': {.linearScanEnd.}
       'a'
     of 'B':
@@ -347,9 +345,7 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo toUpperAscii('f', linearScanEnd = 'f') ## Hexadecimal
@@ -363,7 +359,7 @@ func toUpperAscii*(c: char, linearScanEnd: static[char] = ' '): char {.inline, p
     doAssert toUpperAscii('a') == 'A'
     doAssert toUpperAscii('E') == 'E'
   result = case c # Long case but other proc benefit from this too so it worth it
-    of 'a':
+    of 'a':       # User can "shorten" this case using linearScanEnd anyways
       when linearScanEnd == 'a': {.linearScanEnd.}
       'A'
     of 'b':
@@ -458,9 +454,7 @@ func toUpperAscii*(s: string, linearScanEnd: static[char] = ' '): string {.procv
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo toUpperAscii("#ffffff", linearScanEnd = 'f') ## Hexadecimal
@@ -487,9 +481,7 @@ func capitalizeAscii*(s: string, linearScanEnd: static[char] = ' '): string {.pr
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo capitalizeAscii("#ffffff", linearScanEnd = 'f') ## Hexadecimal
@@ -512,7 +504,13 @@ func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' ')
   ##
   ## ``start`` is the index where to start the string normalization,
   ## if you know that the strings may be normalized up to certain index,
-  ## you can use ``start`` for better performance.
+  ## you can use ``start`` for better performance, see the example:
+  ##
+  ## .. code-block:: nim
+  ##   echo normalize("abcdefghijklmnZZ", start = 12)
+  ##   ## You know first 12 chars are normalized, but last ones may not be
+  ##   echo normalize("kitTEN", start = "kitten".len div 2)
+  ##   ## You can create your own optimizations using start argument
   ##
   ## ``linearScanEnd`` is a static ``char``, must be known at compile-time,
   ## if the char is on the range ``'a'..'z'`` then it will add a
@@ -521,9 +519,7 @@ func normalize*(s: string, start = 0.Natural, linearScanEnd: static[char] = ' ')
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo toLowerAscii("#FFFFFF", linearScanEnd = 'f') ## Hexadecimal
@@ -670,9 +666,7 @@ func cmpIgnoreCase*(a, b: string, start = 0.Natural, linearScanEnd: static[char]
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo cmpIgnoreCase("#FFFFFF", "#fafafa", linearScanEnd = 'f') ## Hexadecimal
@@ -712,9 +706,7 @@ func cmpIgnoreStyle*(a, b: string, linearScanEnd: static[char] = ' '): int {.rtl
   ##
   ## Example: Imagine that you are working with Hexadecimal strings,
   ## you do not have letters beyond ``'F'``, you can use ``linearScanEnd = 'f'``.
-  ## This is an optional compile-time optimization, is disabled by default,
-  ## is up to your creativity how you can use it, some common use cases can be
-  ## Hexadecimal, DNA data, rankings, exam qualifications, room letters, etc.
+  ## This is an optional compile-time optimization, is disabled by default.
   ##
   ## .. code-block:: nim
   ##   echo cmpIgnoreStyle("#FFFFFF", "#fafafa", linearScanEnd = 'f') ## Hexadecimal
