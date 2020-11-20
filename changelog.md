@@ -10,7 +10,7 @@
   `typetraits.nim` module.
 
 - `prelude` now works with the JavaScript target.
-
+- `prelude` adds `math` and `sequtils` by default.
 - Added `almostEqual` in `math` for comparing two float values using a machine epsilon.
 
 - The JSON module can now handle integer literals and floating point literals of
