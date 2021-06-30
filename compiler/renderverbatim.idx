@@ -1,0 +1,1 @@
+extractRunnableExamplesSource	renderverbatim.html#extractRunnableExamplesSource,ConfigRef,PNode	renderverbatim: extractRunnableExamplesSource(conf: ConfigRef; n: PNode): string	
